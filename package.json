@@ -1,1 +1,28 @@
-﻿
+﻿{
+    "name": "l2storagecache",
+    "version": "0.0.1",
+    "description": "a localStorage cache provider service. ",
+    "author": {
+        "name": "ChrisLove",
+        "email": "docluv62@gmail.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+        "grunt": "~0.4.*",
+        "grunt-contrib-cssmin": "*",
+        "grunt-contrib-qunit": "*",
+        "grunt-contrib-jshint": "*",
+        "grunt-contrib-uglify": "*",
+        "grunt-uncss": "^0.3.8",
+        "grunt-contrib-yuidoc": "~0.5.2",
+        "yuidoc-bootstrap-theme": "~1.0.4",
+        "matchdep": "*"
+    }
+
+}
+ 

@@ -1,10 +1,17 @@
 ﻿;
 
+/* # l2sStorageCache #
+
+l2sStorageCache is a service module that manages persisting data in either localStorage or 
+sessionStorage. It can be used by other services to provide a common caching layer.
+*/
+
+
 (function (window, undefined) {
 
     var l2Storeagecache = function (customSettings) {
 
-        var that = new l2Storeagecache.fn.init(customSettings);
+        var that = new l2Storeagecache.fn.init();
 
         if (customSettings) {
 
@@ -16,10 +23,11 @@
             } else {
 
                 that.storageType = customSettings.storageType || that.storageType;
-                that.storage = customSettings.storage || that.storage;
-                that.ttlKey = customSettings.storage || that.ttlKey;
+                that.storage = sessionStorage;
 
             }
+
+            that.ttlKey = customSettings.ttlKey || that.ttlKey;
 
         }
 
@@ -71,12 +79,18 @@
         getItem: function (key) {
 
             var cache = this,
-                ttl = cache.storage.getItem(cache.ttlKey + key);
+                ttl = cache.storage.getItem(cache.ttlKey + key),
+                hasExpired = ttl !== null && !cache.hasItemExpired(key, ttl);
 
-            if (!window.online || (ttl !== null && !cache.hasItemExpired(key, ttl))) {
+            if (!window.online || hasExpired) {
 
                 return cache.storage.getItem(key);
 
+            }
+
+            if (window.online === true && hasExpired) {
+                cache.storage.removeItem(key);
+                cache.storage.removeItem(cache.ttlKey + key);
             }
 
             return null;
@@ -100,7 +114,25 @@
 
         getObject: function (key) {
 
-            return JSON.parse(this.getItem(key));
+            try {
+
+                return JSON.parse(this.getItem(key));
+
+            } catch (e) {
+
+                return null;
+
+            }
+
+        },
+
+        setObject: function (key, value, ttl) {
+
+            if (typeof value === "object") {
+                value = JSON.stringify(value);
+            }
+
+            this.setItem(key, value, ttl);
 
         },
 
