@@ -40,11 +40,11 @@ sessionStorage. It can be used by other services to provide a common caching lay
 
         init: function () {
 
-
             return this;
         },
 
         version: "0.0.1",
+        serviceWorker: false,
 
         setItem: function (key, value, ttl) {
 
@@ -66,11 +66,19 @@ sessionStorage. It can be used by other services to provide a common caching lay
                 value = JSON.stringify(value);
             }
 
-            cache.storage.setItem(key, value);
+            try {
 
-            if (ttl) {
+                cache.storage.setItem(key, value);
 
-                cache.storage.setItem(cache.ttlKey + key, +new Date() + ttl);
+                if (ttl) {
+
+                    cache.storage.setItem(cache.ttlKey + key, +new Date() + ttl);
+
+                }
+
+            } catch (exc) {
+
+                console.error(exc);
 
             }
 
@@ -157,27 +165,18 @@ sessionStorage. It can be used by other services to provide a common caching lay
 
                     return 604800000;
 
-                    break;
-
                 case "day":
 
                     return 86400000;
-
-                    break;
-
 
                 case "hour":
 
                     return 3600000;
 
-                    break;
-
                 case "minute":
 
                     //1 minute
                     return 3600;
-
-                    break;
             }
 
             return 0;
@@ -195,4 +194,3 @@ sessionStorage. It can be used by other services to provide a common caching lay
     return (window.l2Storeagecache = l2Storeagecache);
 
 })(window);
-
